@@ -1,0 +1,21 @@
+body {
+  padding: 10px;
+}
+
+.listing {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 3px;
+  height: 400px;
+  display: flex;
+}
+
+.listing-img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  height: auto;
+}

@@ -1,0 +1,88 @@
+<!-- prettier-ignore -->
+{% extends "auctions/layout.html" %} {% block body %}
+<div class="container col-lg-7">
+  {% if messages %} {% for message in messages %}
+  <div class="alert alert-danger" role="alert">{{ message }}</div>
+  {% endfor %} {% endif %}
+  <div class="row mb-3">
+    <div class="text-center">
+      <h2>Create Listings</h2>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-md">
+      <form action="{% url 'create' %}" method="post">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-md-2">
+            <label for="title" class="form-label">Title:</label>
+          </div>
+          <div class="col">
+            <input
+              type="text"
+              name="title"
+              id="title"
+              class="form-control"
+              required
+            />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-2 mb-1">
+            <label for="description">Description:</label>
+          </div>
+          <div class="col">
+            <textarea
+              class="form-control"
+              id="description"
+              name="description"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-2 text-end-md righttext">
+            <label for="bid" class="form-label">Starting Bid:</label>
+          </div>
+          <div class="col-2">
+            <input
+              type="number"
+              id="bid"
+              name="bid"
+              class="form-control"
+              required
+            />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-2">
+            <label for="url">Image URL:</label>
+          </div>
+          <div class="col">
+            <input type="url" id="url" name="url" />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-2">
+            <label for="category">Category:</label>
+          </div>
+          <div class="col">
+            <select class="form-select" id="category" name="category">
+              {% for category,name in categories %}
+              <option value="{{ category }}">{{ name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock body %}

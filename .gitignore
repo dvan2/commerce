@@ -1,0 +1,11 @@
+__pycache__
+db.sqlite3
+media
+*.pyc
+*.pot
+*.log
+
+venv/
+
+.djlintrc
+.prettierignore
