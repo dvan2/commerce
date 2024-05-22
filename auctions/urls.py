@@ -2,11 +2,12 @@ from django.urls import path
 
 from . import views
 
+appname="auctions"
 urlpatterns = [
     path("", views.index, name="index"),
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("create", views.create, name="create"),
-    path("active", views.active, name="active")
+    path("<int:listing_id>/active", views.listing, name="listing")
 ]

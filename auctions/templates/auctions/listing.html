@@ -1,0 +1,30 @@
+<!-- prettier-ignore -->
+{% extends "auctions/layout.html" %} {% block body %}
+{% if messages %} 
+  {% for message in messages %}
+<div class="alert alert-danger" role="alert">{{ message }}</div>
+{% endfor %} {% endif %}
+<div class="row mb-3">
+  <div class="text-center">
+    <h2>Listing</h2>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    {% if listing.url %}
+    <div>
+      <img
+        src="{{ listing.url }}"
+        alt="Picture of listing"
+        class="img-fluid single-listing-img"
+      />
+    </div>
+    {% endif %}
+    <p>{{ listing.description }}</p>
+    <h2>${{ listing.bid }}</h2>
+    <div><button type="submit" class="btn btn-primary">Place Bid</button></div>
+  </div>
+</div>
+
+{% endblock body %}

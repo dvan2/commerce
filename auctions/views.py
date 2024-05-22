@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
@@ -105,5 +105,11 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-def active(request):
-    return render(request, "auctions/active.html")
+def listing(request, listing_id):
+    try:
+        listing = Listing.objects.get(id=listing_id)
+    except Listing.DoesNotExist:
+        return HttpResponseBadRequest("Listing not found.")
+    return render(request, "auctions/listing.html", {
+        "listing": listing
+    })

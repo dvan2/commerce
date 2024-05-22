@@ -7,13 +7,15 @@
 </div>
 
 {% for listing in listings %} 
-    <div class="container-fluid mx-5 listing">
-        <div class="row gx-5">
+    <div class="container-fluid">
+        <div class="row listing">
             {% if listing.url %}
-            <img src="{{ listing.url }}" alt="Picture of a listing item" class="listing-img col-md-6" />
+            <img src="{{ listing.url }}" alt="Picture of a listing item" class="img-fluid listing-img col-md-3" />
+            {% else %}
+            <img src="https://img.icons8.com/?size=100&id=1G2BW7-tQJJJ&format=png&color=000000" alt="No picture provided" class="img-fluid listing-img col-md-3" />
             {% endif %} 
             <div class="col-md">
-                <h2>{{ listing.title }}</h2>
+                <a href="{% url 'listing' listing.pk %}">{{ listing.title }}</a>
                 <p>{{ listing.description }}</p>
                 <p>Price: ${{ listing.bid }}</p>
             </div>

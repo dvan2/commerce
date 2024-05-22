@@ -4,18 +4,29 @@ body {
 
 .listing {
   border: 1px solid #ddd;
-  padding: 20px;
   border-radius: 8px;
   margin-bottom: 3px;
-  height: 400px;
-  display: flex;
+  height: 300px;
+  padding: 20px;
 }
 
 .listing-img {
-  display: block;
-  width: 100%;
+  padding: 10px;
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  height: auto;
+}
+
+.single-listing-img {
+  max-height: 300px;
+}
+
+@media (max-width: 768px) {
+  .listing {
+    height: 100%;
+  }
+
+  .listing-img {
+    max-height: 250px;
+  }
 }
