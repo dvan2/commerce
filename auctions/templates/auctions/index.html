@@ -6,19 +6,23 @@
   </div>
 </div>
 
-{% for listing in listings %} 
-    <div class="container-fluid">
-        <div class="row listing">
-            {% if listing.url %}
-            <img src="{{ listing.url }}" alt="Picture of a listing item" class="img-fluid listing-img col-md-3" />
-            {% else %}
-            <img src="https://img.icons8.com/?size=100&id=1G2BW7-tQJJJ&format=png&color=000000" alt="No picture provided" class="img-fluid listing-img col-md-3" />
-            {% endif %} 
-            <div class="col-md">
-                <a href="{% url 'listing' listing.pk %}">{{ listing.title }}</a>
-                <p>{{ listing.description }}</p>
-                <p>Price: ${{ listing.bid }}</p>
+<div class="container-fluid">
+  <div class="row">
+    {% for listing in listings %}
+    <div class="col-md-4 mb-3 mb-md-1">
+        <div class="card card-bg">
+          {% if listing.url %}
+            <img src="{{ listing.url }}" alt="Picture of a listing item" class="card-img-top listing-img" />
+          {% else %}
+            <img src="https://img.icons8.com/?size=100&id=1G2BW7-tQJJJ&format=png&color=000000" alt="card-img-top No picture provided" class="listing-img" />
+          {% endif %}
+            <div class="container p-3">
+              <a class="card-title" href="{% url 'listing' listing.pk %}">{{ listing.title }}</a>
+              <p class="card-text">{{ listing.description }}</p>
+              <p class="card-text">Price: ${{ listing.bid }}</p>
             </div>
         </div>
     </div>
-{% endfor %} {% endblock body %}
+    {% endfor %} {% endblock body %}
+  </div>
+</div>
