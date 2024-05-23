@@ -23,7 +23,21 @@
     {% endif %}
     <p>{{ listing.description }}</p>
     <h2>${{ listing.bid }}</h2>
-    <div><button type="submit" class="btn btn-primary">Place Bid</button></div>
+    <form action="{% url 'listing' listing.id %}" method="post">
+      {% csrf_token %}
+      <label for="new-bid" class="form-label">Bid</label>
+      <div class="col-sm-1">
+        <input
+          type="number"
+          id="new-bid"
+          name="new-bid"
+          class="form-control mb-3"
+          min="0"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Place Bid</button>
+    </form>
   </div>
 </div>
 

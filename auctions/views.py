@@ -110,6 +110,21 @@ def listing(request, listing_id):
         listing = Listing.objects.get(id=listing_id)
     except Listing.DoesNotExist:
         return HttpResponseBadRequest("Listing not found.")
+    if request.method == "POST":
+        try:
+            new_bid = int(request.POST.get("new-bid"))
+        except ValueError:
+            messages.error(request, "Bid value must be a number")
+            return render(request, "auctions/listing.html", {"listing": listing})
+        if new_bid < 0:
+            messages.error(request, "Bid value must be postive")
+            return render(request, "auctions/listing.html" , {"listing": listing})
+        
+        old_bid = listing.bid
+        if new_bid <= old_bid:
+            messages.error(request, "Bid value must be greater than previous bid.")
+            return render(request, "auctions/listing.html", {"listing": listing})
+
     return render(request, "auctions/listing.html", {
         "listing": listing
     })
