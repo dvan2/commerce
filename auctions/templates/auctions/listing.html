@@ -45,10 +45,16 @@
         {% csrf_token %}
         <button type="submit" class="btn btn-secondary mt-3">
           <!-- prettier-ignore -->
-          {% if watched %} Remove From Watchlist {% else %} Add to Watchlist 
+          {% if listing.watched %} Remove From Watchlist {% else %} Add to Watchlist 
           {% endif %}
         </button>
       </form>
+      {% if listing.is_owner %}
+      <form action="{% url 'close' listing.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger mt-3">Close Listing</button>
+      </form>
+      {% endif %}
     </div>
     {% endblock body %}
   </div>
