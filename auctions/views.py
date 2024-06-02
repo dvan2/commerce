@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadReque
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Listing
 
@@ -13,6 +14,7 @@ def index(request):
     print(listings)
     return render(request, "auctions/index.html", {'listings' : listings})
 
+@login_required
 def create(request):
     categories = Listing.Category.choices
     if request.method == "POST":
@@ -50,8 +52,6 @@ def create(request):
             category=category
         )
 
-        print("Title:", listing.title)
-    print(categories)
     return render(request, "auctions/create.html", {'categories': categories})
 
 def login_view(request):
@@ -110,21 +110,52 @@ def listing(request, listing_id):
         listing = Listing.objects.get(id=listing_id)
     except Listing.DoesNotExist:
         return HttpResponseBadRequest("Listing not found.")
+
+    user = request.user
+    watched = False
+
+    if listing in user.watchlist.all():
+        watched= True
+    else:
+        watched = False
     if request.method == "POST":
         try:
             new_bid = int(request.POST.get("new-bid"))
         except ValueError:
             messages.error(request, "Bid value must be a number")
-            return render(request, "auctions/listing.html", {"listing": listing})
+            return render(request, "auctions/listing.html", {"listing": listing, "watched": watched})
         if new_bid < 0:
             messages.error(request, "Bid value must be postive")
-            return render(request, "auctions/listing.html" , {"listing": listing})
+            return render(request, "auctions/listing.html" , {"listing": listing, "watched": watched})
         
         old_bid = listing.bid
         if new_bid <= old_bid:
             messages.error(request, "Bid value must be greater than previous bid.")
-            return render(request, "auctions/listing.html", {"listing": listing})
+            return render(request, "auctions/listing.html", {"listing": listing, "watched": watched})
+
 
     return render(request, "auctions/listing.html", {
-        "listing": listing
+        "listing": listing, "watched": watched
+    })
+
+@login_required
+def watch_list(request, listing_id):
+    try:
+        listing = Listing.objects.get(id=listing_id)
+    except Listing.DoesNotExist:
+        return HttpResponseBadRequest("Listing not found.")
+    
+    user = request.user
+    watched = False
+    if listing in user.watchlist.all():
+        user.watchlist.remove(listing)
+        watched= False
+        print("removed from watch")
+    else:
+        user.watchlist.add(listing)
+        watched = True
+        print("added to watch")
+
+    return render(request, "auctions/listing.html", {
+        "listing": listing, "watched": watched
     })

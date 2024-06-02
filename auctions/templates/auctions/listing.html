@@ -13,7 +13,7 @@
 <div class="container">
   <div class="row">
     {% if listing.url %}
-    <div>
+    <div class="col-sm-4">
       <img
         src="{{ listing.url }}"
         alt="Picture of listing"
@@ -21,24 +21,35 @@
       />
     </div>
     {% endif %}
-    <p>{{ listing.description }}</p>
-    <h2>${{ listing.bid }}</h2>
-    <form action="{% url 'listing' listing.id %}" method="post">
-      {% csrf_token %}
-      <label for="new-bid" class="form-label">Bid</label>
-      <div class="col-sm-1">
-        <input
-          type="number"
-          id="new-bid"
-          name="new-bid"
-          class="form-control mb-3"
-          min="0"
-          required
-        />
-      </div>
-      <button type="submit" class="btn btn-primary">Place Bid</button>
-    </form>
+    <div class="col">
+      <h2>${{ listing.bid }}</h2>
+      <p>{{ listing.description }}</p>
+      <form action="{% url 'listing' listing.id %}" method="post">
+        {% csrf_token %}
+        <label for="new-bid" class="form-label">Bid:</label>
+        <div class="col-2">
+          <input
+            type="number"
+            id="new-bid"
+            name="new-bid"
+            class="form-control mb-3"
+            min="0"
+            required
+          />
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary">Place Bid</button>
+        </div>
+      </form>
+      <form action="{% url 'watch_list' listing.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-secondary mt-3">
+          <!-- prettier-ignore -->
+          {% if watched %} Remove From Watchlist {% else %} Add to Watchlist 
+          {% endif %}
+        </button>
+      </form>
+    </div>
+    {% endblock body %}
   </div>
 </div>
-
-{% endblock body %}

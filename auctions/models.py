@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class User(AbstractUser):
-    pass
+    watchlist = models.ManyToManyField('Listing', related_name="watched_by")
 
 class Listing(models.Model):
     class Category(models.TextChoices):
