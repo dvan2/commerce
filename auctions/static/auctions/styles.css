@@ -37,3 +37,13 @@ body {
   background-color: #e7f3ff !important;
   border: 1px solid #dee2e6;
 }
+
+.container {
+  background-color: #e7f3ff;
+  border: 1px solid #dee2e6;
+  border-radius: 9px;
+}
+
+.container h2 {
+  text-align: center;
+}
