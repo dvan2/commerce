@@ -135,24 +135,29 @@ def listing(request, listing_id):
     })
 
 @login_required
-def watch_list(request, listing_id):
-    try:
-        listing = Listing.objects.get(id=listing_id)
-    except Listing.DoesNotExist:
-        return HttpResponseBadRequest("Listing not found.")
-    
+def watch_list(request, listing_id=None):
     user = request.user
-    watched = False
-    if listing in user.watchlist.all():
-        user.watchlist.remove(listing)
-        watched= False
+    if request.method == "POST" and listing_id is not None:
+        try:
+            listing = Listing.objects.get(id=listing_id)
+        except Listing.DoesNotExist:
+            return HttpResponseBadRequest("Listing not found.")
+        
+        watched = False
+        if listing in user.watchlist.all():
+            user.watchlist.remove(listing)
+            watched= False
+        else:
+            user.watchlist.add(listing)
+            watched = True
+
+        listing.watched = watched
+        return redirect('listing', listing_id = listing_id)
     else:
-        user.watchlist.add(listing)
-        watched = True
-
-    listing.watched = watched
-    return redirect('listing', listing_id = listing_id)
-
+        print(user.watchlist.all())
+        return render(request, "auctions/index.html", {
+            "listings": user.watchlist.all()
+        })
 
 @login_required
 def close(request, listing_id):

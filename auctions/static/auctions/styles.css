@@ -2,6 +2,12 @@ body {
   padding: 10px;
 }
 
+.login-container {
+  width: 80%;
+  max-width: 600px;
+  margin: auto;
+}
+
 .listing {
   border: 1px solid #ddd;
   border-radius: 8px;
