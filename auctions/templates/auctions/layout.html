@@ -23,29 +23,86 @@
       <strong>{{ user.username }}</strong>. {% else %} Not signed in. 
       {% endif %}
     </div>
-    <ul class="nav">
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'create' %}">Create Listing</a>
-      </li>
-      {% if user.is_authenticated %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'watchlist' %}">WatchList</a>
-      </li>
-      {% else %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'login' %}">Log In</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'register' %}">Register</a>
-      </li>
-      {% endif %}
-    </ul>
+    <nav>
+      <ul>
+        <li class="hideOnMobile">
+          <a href="{% url 'index' %}">Active Listings</a>
+        </li>
+        <li class="hideOnMobile">
+          <a href="{% url 'create' %}">Create Listing</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="hideOnMobile">
+          <a href="{% url 'logout' %}">Log Out</a>
+        </li>
+        <li class="hideOnMobile">
+          <a href="{% url 'watchlist' %}">WatchList</a>
+        </li>
+        {% else %}
+        <li class="hideOnMobile">
+          <a href="{% url 'login' %}">Log In</a>
+        </li>
+        <li class="hideOnMobile">
+          <a href="{% url 'register' %}">Register</a>
+        </li>
+        {% endif %}
+        <!-- prettier-ignore -->
+        <li onclick=showSidebar() class="menu-button">
+          <a href="#">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="26px"
+              viewBox="0 -960 960 960"
+              width="26px"
+              fill="#e8eaed"
+            >
+              <path
+                d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"
+              />
+            </svg>
+          </a>
+        </li>
+      </ul>
+      <ul class="sidebar px-0">
+        <li onclick="hideSidebar()">
+          <a href="#">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="26px"
+              viewBox="0 -960 960 960"
+              width="26px"
+              fill="#e8eaed"
+            >
+              <path
+                d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+              />
+            </svg>
+          </a>
+        </li>
+
+        <li>
+          <a href="{% url 'index' %}">Active Listings</a>
+        </li>
+        <li>
+          <a href="{% url 'create' %}">Create Listing</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li>
+          <a href="{% url 'logout' %}">Log Out</a>
+        </li>
+        <li>
+          <a href="{% url 'watchlist' %}">WatchList</a>
+        </li>
+        {% else %}
+        <li>
+          <a href="{% url 'login' %}">Log In</a>
+        </li>
+        <li>
+          <a href="{% url 'register' %}">Register</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
     <hr />
     {% block body %} {% endblock body %}
   </body>

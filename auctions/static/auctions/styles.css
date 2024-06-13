@@ -1,5 +1,53 @@
 body {
   padding: 10px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+nav {
+  background-color: white;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+}
+nav ul {
+  width: 100%;
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+nav li {
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+nav a {
+  height: 100%;
+  padding: 0 30px;
+  text-decoration: none;
+  display: flex;
+  color: black;
+  align-items: center;
+}
+nav a:hover {
+  background-color: #f0f0f0;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 250px;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.249);
+  box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  backdrop-filter: blur(10px);
+}
+.sidebar li,
+.sidebar a {
+  width: 100%;
 }
 
 .login-container {
@@ -39,17 +87,40 @@ body {
   }
 }
 
-.card-bg {
-  background-color: #e7f3ff !important;
-  border: 1px solid #dee2e6;
-}
-
-.container {
-  background-color: #e7f3ff;
-  border: 1px solid #dee2e6;
-  border-radius: 9px;
-}
-
 .container h2 {
   text-align: center;
+}
+
+.menu-button {
+  display: none;
+}
+
+.register-box {
+  width: 500px;
+  margin: auto;
+}
+
+@media (max-width: 800px) {
+  .hideOnMobile {
+    display: none;
+  }
+  .menu-button {
+    display: block;
+  }
+  .register-box {
+    width: 80%;
+  }
+}
+@media (max-width: 414px) {
+  .sidebar {
+    width: 100%;
+  }
+  .register-box {
+    width: 100%;
+  }
+}
+
+.page-title {
+  text-align: center;
+  margin-bottom: 12px;
 }

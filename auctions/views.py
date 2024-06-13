@@ -13,7 +13,9 @@ from .models import User, Listing
 def index(request):
     listings = Listing.objects.all()
     print(listings)
-    return render(request, "auctions/index.html", {'listings' : listings})
+    return render(request, "auctions/index.html", {
+        'heading': "Active Listing",
+        'listings' : listings})
 
 @login_required
 def create(request):
@@ -154,8 +156,8 @@ def watch_list(request, listing_id=None):
         listing.watched = watched
         return redirect('listing', listing_id = listing_id)
     else:
-        print(user.watchlist.all())
         return render(request, "auctions/index.html", {
+            "heading": "Watch List",
             "listings": user.watchlist.all()
         })
 
