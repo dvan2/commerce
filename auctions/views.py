@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 
-from .models import User, Listing
+from .models import User, Listing, ClosedListing, Bidding
 
 
 def index(request):
@@ -131,6 +131,16 @@ def listing(request, listing_id):
             if new_bid <= old_bid:
                 messages.error(request, "Bid value must be greater than previous bid.")
                 return render(request, "auctions/listing.html", {"listing": listing})
+            
+            new_bidding =  Bidding(
+                bidder=request.user,
+                listing=listing,
+                amount=new_bid
+            )
+
+            new_bidding.save()
+            messages.success(request, "Your bid was successful")
+            return redirect('listing', listing_id=listing_id)
 
     return render(request, "auctions/listing.html", {
         "listing": listing
@@ -168,6 +178,27 @@ def close(request, listing_id):
         print(listing)
     except Listing.DoesNotExist:
         return HttpResponseBadRequest("Listing not found.")
+    if request.method == "POST" and listing_id is not None:
+        winner = Bidding.objects.filter(listing=listing).order_by('-amount').first()
+        if not winner:
+            return HttpResponseBadRequest("No bids found for this listing.")
+        
+        winner = winner.bidder
+        closed_listing = ClosedListing(
+            title=listing.title,
+            description=listing.description,
+            bid=listing.bid,
+            url=listing.url,
+            owner=listing.owner,
+            category=listing.category,
+            date=listing.date,
+            winner=winner
+        )
+        closed_listing.save()
+        
+        # Delete the listing
+        listing.delete()
+        return redirect('index')
     
     return redirect('index')
  
