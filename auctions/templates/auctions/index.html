@@ -19,7 +19,7 @@
             <div class="container p-3">
               <a class="card-title" href="{% url 'listing' listing.pk %}">{{ listing.title }}</a>
               <p class="card-text">{{ listing.description }}</p>
-              <p class="card-text">Price: ${{ listing.bid }}</p>
+              <p class="card-text">Price: ${{ listing.current_bid }}</p>
             </div>
         </div>
     </div>

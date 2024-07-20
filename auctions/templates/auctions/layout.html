@@ -20,7 +20,7 @@
     <!-- prettier-ignore -->
     <div>
       {% if user.is_authenticated %} Signed in as
-      <strong>{{ user.username }}</strong>. {% else %} Not signed in. 
+      <strong>{{ user.username }}</strong> {% else %} Not signed in. 
       {% endif %}
     </div>
     <nav>
@@ -38,10 +38,14 @@
         <li class="hideOnMobile">
           <a href="{% url 'watchlist' %}">WatchList</a>
         </li>
+        <li class="hideOnMobile">
+          <a href="{% url 'profile' %}">Profile</a>
+        </li>
         {% else %}
         <li class="hideOnMobile">
           <a href="{% url 'login' %}">Log In</a>
         </li>
+
         <li class="hideOnMobile">
           <a href="{% url 'register' %}">Register</a>
         </li>

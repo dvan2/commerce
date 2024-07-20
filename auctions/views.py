@@ -6,13 +6,13 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
+from django.utils import timezone
 
-from .models import User, Listing, ClosedListing, Bidding
+from .models import User, Listing, Bidding
 
 
 def index(request):
     listings = Listing.objects.all()
-    print(listings)
     return render(request, "auctions/index.html", {
         'heading': "Active Listing",
         'listings' : listings})
@@ -50,9 +50,11 @@ def create(request):
         listing = Listing.objects.create(
             title=title,
             description= description,
-            bid=bid,
+            start_price =bid,
+            owner= request.user,
             url=url,
-            category=category
+            category=category,
+            current_bid = bid
         )
 
     return render(request, "auctions/create.html", {'categories': categories})
@@ -117,33 +119,41 @@ def listing(request, listing_id):
     if request.user.is_authenticated:
         listing.watched = request.user.watchlist.filter(id=listing_id).exists()
         listing.is_owner = (listing.owner == request.user)
+        current_bid = Bidding.objects.filter(listing=listing).order_by('-amount').first()
+
+        if current_bid:
+            listing.winning_user = current_bid.bidder == request.user
+        else:
+            listing.winner_user = False
+        
+        bidding_history = listing.bids.order_by('-amount')
         if request.method == "POST":
             try:
-                new_bid = int(request.POST.get("new-bid"))
+                new_bid = float(request.POST.get("new-bid"))
             except ValueError:
                 messages.error(request, "Bid value must be a number")
                 return render(request, "auctions/listing.html", {"listing": listing})
+            old_bid = listing.current_bid
             if new_bid < 0:
                 messages.error(request, "Bid value must be postive")
-                return render(request, "auctions/listing.html" , {"listing": listing})
-            
-            old_bid = listing.bid
-            if new_bid <= old_bid:
+            elif new_bid <= old_bid:
                 messages.error(request, "Bid value must be greater than previous bid.")
-                return render(request, "auctions/listing.html", {"listing": listing})
-            
-            new_bidding =  Bidding(
-                bidder=request.user,
-                listing=listing,
-                amount=new_bid
-            )
+            else:
+                new_bidding =  Bidding(
+                    bidder=request.user,
+                    listing=listing,
+                    amount=new_bid
+                )
 
-            new_bidding.save()
-            messages.success(request, "Your bid was successful")
+                new_bidding.save()
+                listing.current_bid = new_bid
+                listing.save()
+                messages.success(request, "Your bid was successful")
             return redirect('listing', listing_id=listing_id)
 
     return render(request, "auctions/listing.html", {
-        "listing": listing
+        "listing": listing,
+        "bidding_history" : bidding_history
     })
 
 @login_required
@@ -175,30 +185,25 @@ def watch_list(request, listing_id=None):
 def close(request, listing_id):
     try:
         listing = Listing.objects.get(id=listing_id)
-        print(listing)
     except Listing.DoesNotExist:
         return HttpResponseBadRequest("Listing not found.")
     if request.method == "POST" and listing_id is not None:
+        # get winner
         winner = Bidding.objects.filter(listing=listing).order_by('-amount').first()
         if not winner:
             return HttpResponseBadRequest("No bids found for this listing.")
         
-        winner = winner.bidder
-        closed_listing = ClosedListing(
-            title=listing.title,
-            description=listing.description,
-            bid=listing.bid,
-            url=listing.url,
-            owner=listing.owner,
-            category=listing.category,
-            date=listing.date,
-            winner=winner
-        )
-        closed_listing.save()
+        listing.winner = winner.bidder
+        listing.closed_date = timezone.now()
         
-        # Delete the listing
-        listing.delete()
         return redirect('index')
     
     return redirect('index')
  
+@login_required
+def profile(request):
+    user = request.user
+    winning_bids = user.winner_listing.all()
+    return render(request, 'auctions/index.html', 
+                  { 'heading': "Your winning bids", 
+                   'listings': winning_bids})

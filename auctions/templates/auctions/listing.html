@@ -22,11 +22,13 @@
     </div>
     {% endif %}
     <div class="col">
-      <h2>${{ listing.bid }}</h2>
+      <h2>Bid: ${{ listing.current_bid }}</h2>
       <p>{{ listing.description }}</p>
+      <p>Posted By: {{ listing.owner }}</p>
+      {% if listing.is_owner == False %}
       <form action="{% url 'listing' listing.id %}" method="post">
         {% csrf_token %}
-        <label for="new-bid" class="form-label">Bid:</label>
+        <label for="new-bid" class="form-label">Bid Price:</label>
         <div class="col-2">
           <input
             type="number"
@@ -49,12 +51,24 @@
           {% endif %}
         </button>
       </form>
-      {% if listing.is_owner %}
+      <!-- prettier-ignore -->
+      {% if listing.winning_user %}You are leading the bid {% endif %} 
+      {% else %}
       <form action="{% url 'close' listing.id %}" method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger mt-3">Close Listing</button>
       </form>
       {% endif %}
+      <ul>
+        <h3>Bidding History</h3>
+        {% for bid in bidding_history %}
+        <li>
+          ${{ bid.amount }} by {{ bid.bidder.username }} on {{ bid.bid_date }}
+        </li>
+        {% empty %}
+        <li>No bids yet</li>
+        {% endfor %}
+      </ul>
     </div>
     {% endblock body %}
   </div>
