@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.utils import timezone
 
-from .models import User, Listing, Bidding
+from .models import User, Listing, Bidding, ClosedListing
 
 
 def index(request):
@@ -56,6 +56,8 @@ def create(request):
             category=category,
             current_bid = bid
         )
+        messages.success(request, "Listing successfully created.")
+        return redirect('listing', listing_id=listing.id)
 
     return render(request, "auctions/create.html", {'categories': categories})
 
@@ -193,17 +195,51 @@ def close(request, listing_id):
         if not winner:
             return HttpResponseBadRequest("No bids found for this listing.")
         
-        listing.winner = winner.bidder
-        listing.closed_date = timezone.now()
+        closed_listing = ClosedListing.objects.create(
+            title=listing.title,
+            description=listing.description,
+            start_price=listing.start_price,
+            url=listing.url,
+            owner=listing.owner,
+            category=listing.category,
+            date=listing.date,
+            winner=winner.bidder,
+            final_price= listing.current_bid,
+            closed_date=timezone.now()
+        )
+        closed_listing.save()
         
+        listing.delete()
+    
         return redirect('index')
     
     return redirect('index')
  
 @login_required
 def profile(request):
+    return render(request, 'auctions/profile.html')
+
+@login_required
+def winnings(request):
     user = request.user
-    winning_bids = user.winner_listing.all()
+    winning_bids = user.won_listings.all()
     return render(request, 'auctions/index.html', 
-                  { 'heading': "Your winning bids", 
-                   'listings': winning_bids})
+                  { 'heading': "Your winning items", 
+                  'listings': winning_bids})
+            
+@login_required
+def active_bids(request):
+    user = request.user
+    active_listings= Listing.objects.filter(bids__bidder=user).distinct()
+    return render(request, 'auctions/index.html', 
+                  { 'heading': "Active Bids", 
+                  'listings': active_listings})
+            
+@login_required
+def user_listings(request):
+    user = request.user
+    owner_listings = user.listings.all()
+    return render(request, 'auctions/index.html', 
+                  { 'heading': "Your Listings", 
+                  'listings': owner_listings})
+            

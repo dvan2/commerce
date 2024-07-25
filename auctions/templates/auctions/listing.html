@@ -2,8 +2,11 @@
 {% extends "auctions/layout.html" %} {% block body %}
 {% if messages %} 
   {% for message in messages %}
+  {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
 <div class="alert alert-danger" role="alert">{{ message }}</div>
-{% endfor %} {% endif %}
+{% else %}
+<div class="alert alert-success" role="alert">{{ message }}</div>
+{% endif %} {% endfor %} {% endif %}
 <div class="row mb-3">
   <div class="text-center">
     <h2>Listing</h2>
@@ -22,7 +25,7 @@
     </div>
     {% endif %}
     <div class="col">
-      <h2>Bid: ${{ listing.current_bid }}</h2>
+      <h3>Bid: ${{ listing.current_bid }}</h3>
       <p>{{ listing.description }}</p>
       <p>Posted By: {{ listing.owner }}</p>
       {% if listing.is_owner == False %}
@@ -52,23 +55,27 @@
         </button>
       </form>
       <!-- prettier-ignore -->
-      {% if listing.winning_user %}You are leading the bid {% endif %} 
-      {% else %}
+      {% if listing.winning_user %}
+      <p>You are leading the bid</p>
+      {% endif %} {% else %}
       <form action="{% url 'close' listing.id %}" method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger mt-3">Close Listing</button>
       </form>
       {% endif %}
-      <ul>
+      <div class="bidding-history mt-3">
         <h3>Bidding History</h3>
-        {% for bid in bidding_history %}
-        <li>
-          ${{ bid.amount }} by {{ bid.bidder.username }} on {{ bid.bid_date }}
-        </li>
-        {% empty %}
-        <li>No bids yet</li>
-        {% endfor %}
-      </ul>
+        <ul>
+          {% for bid in bidding_history %}
+          <li>
+            <!-- prettier-ignore -->
+            {{ bid.bidder.username }} bid ${{ bid.amount }} on {{ bid.bid_date }}
+          </li>
+          {% empty %}
+          <li>No bids yet</li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
     {% endblock body %}
   </div>

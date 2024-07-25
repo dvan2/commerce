@@ -1,9 +1,15 @@
 <!-- prettier-ignore -->
 {% extends "auctions/layout.html" %} {% block body %}
 <div class="container col-lg-7">
-  {% if messages %} {% for message in messages %}
-  <div class="alert alert-danger" role="alert">{{ message }}</div>
-  {% endfor %} {% endif %}
+  {% if messages %} 
+    {% for message in messages %} 
+      {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
+      {% else %}
+        <div class="alert alert-success" role="alert">{{ message }}</div>
+      {% endif %} 
+    {% endfor %} 
+  {% endif %}
   <div class="row mb-3">
     <div class="text-center">
       <h2>Create Listings</h2>

@@ -1,3 +1,40 @@
 {% extends "auctions/layout.html" %} {% block body %}
-<h1>Your Winning Bids</h1>
+<div class="container">
+  <div class="row">
+    <div class="card col-sm">
+      <div class="card-body">
+        <h5>Your Listings</h5>
+        <p class="card-text">Check listings that you have created.</p>
+        <form action="{% url 'owner_listings' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary mt-3">
+            Your Listings
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="card col-sm">
+      <div class="card-body">
+        <h5>Bids</h5>
+        <p class="card-text">Check your bid items</p>
+        <form action="{% url 'active_bids' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary mt-3">Go Page</button>
+        </form>
+      </div>
+    </div>
+    <div class="card col-sm">
+      <div class="card-body">
+        <h5>Won Items</h5>
+        <p class="card-text">Check on items that you've won.</p>
+        <form action="{% url 'winnings' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary mt-3">
+            Won Items
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock body %}

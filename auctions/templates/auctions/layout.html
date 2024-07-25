@@ -33,13 +33,13 @@
         </li>
         {% if user.is_authenticated %}
         <li class="hideOnMobile">
-          <a href="{% url 'logout' %}">Log Out</a>
-        </li>
-        <li class="hideOnMobile">
           <a href="{% url 'watchlist' %}">WatchList</a>
         </li>
         <li class="hideOnMobile">
           <a href="{% url 'profile' %}">Profile</a>
+        </li>
+        <li class="hideOnMobile">
+          <a href="{% url 'logout' %}">Log Out</a>
         </li>
         {% else %}
         <li class="hideOnMobile">
