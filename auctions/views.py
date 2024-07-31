@@ -223,7 +223,7 @@ def profile(request):
 def winnings(request):
     user = request.user
     winning_bids = user.won_listings.all()
-    return render(request, 'auctions/index.html', 
+    return render(request, 'auctions/winnings.html', 
                   { 'heading': "Your winning items", 
                   'listings': winning_bids})
             
