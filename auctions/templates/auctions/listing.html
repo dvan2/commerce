@@ -25,7 +25,7 @@
       <h2>Bid: ${{ listing.current_bid }}</h2>
       <p>{{ listing.description }}</p>
       <p>Posted By: {{ listing.owner }}</p>
-      {% if listing.is_owner == False and listing.winner == False %}
+      {% if listing.is_owner == False and not listing.winner %}
       <form action="{% url 'listing' listing.id %}" method="post">
         {% csrf_token %}
         <label for="new-bid" class="form-label">Bid Price:</label>
@@ -53,7 +53,7 @@
       </form>
       <!-- prettier-ignore -->
       {% if listing.winning_user %}You are leading the bid {% endif %} 
-      {% elif listing.is_owner %}
+      {% elif listing.is_owner and not listing.winner %}
       <form action="{% url 'close' listing.id %}" method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger mt-3">Close Listing</button>
@@ -61,8 +61,8 @@
       {% elif listing.winning_user %}
       <p>You won this bid by betting ${{ listing.current_bid }}.</p>
       {% elif listing.winner %}
+      <p>Listing is Sold!</p>
       <p>Won By: {{ listing.winner }} {% endif %}</p>
-
       <ul>
         <h3>Bidding History</h3>
         {% for bid in bidding_history %}

@@ -132,7 +132,7 @@ def listing(request, listing_id):
                 new_bid = float(request.POST.get("new-bid"))
             except ValueError:
                 messages.error(request, "Bid value must be a number")
-                return render(request, "auctions/listing.html", {"listing": listing})
+                # return redirect('listing', listing_id = listing_id)
             old_bid = listing.current_bid
             if new_bid < 0:
                 messages.error(request, "Bid value must be postive")
@@ -188,6 +188,11 @@ def close(request, listing_id):
     except Listing.DoesNotExist:
         return HttpResponseBadRequest("Listing not found.")
     if request.method == "POST" and listing_id is not None:
+        if listing.winner:
+            messages.error(request, "Listing already closed.")
+            return redirect('listing', listing_id = listing_id)
+
+
         # get winner
         winner = Bidding.objects.filter(listing=listing).order_by('-amount').first()
         if not winner:
