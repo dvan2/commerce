@@ -19,7 +19,11 @@
             <div class="container p-3">
               <a class="card-title" href="{% url 'listing' listing.pk %}">{{ listing.title }}</a>
               <p class="card-text">{{ listing.description }}</p>
-              <p class="card-text">Price: ${{ listing.current_bid }}</p>
+              {% if listing.winner %}
+              <p class="card-text">Sold For: ${{ listing.current_bid }}</p>
+              {% else %}
+              <p class="card-text">Current Bid Price: ${{ listing.current_bid }}</p>
+              {% endif %}
             </div>
         </div>
     </div>
