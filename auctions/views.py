@@ -203,3 +203,28 @@ def close(request, listing_id):
 @login_required
 def profile(request):
     return render(request, 'auctions/profile.html')
+
+@login_required
+def winnings(request):
+    user = request.user
+    winning_bids = user.winner_listing.all()
+    return render(request, 'auctions/winnings.html', 
+                  { 'heading': "Your winning items", 
+                  'listings': winning_bids})
+            
+@login_required
+def active_bids(request):
+    user = request.user
+    active_listings= Listing.objects.filter(bids__bidder=user).distinct()
+    return render(request, 'auctions/index.html', 
+                  { 'heading': "Active Bids", 
+                  'listings': active_listings})
+            
+@login_required
+def user_listings(request):
+    user = request.user
+    owner_listings = user.listings.all()
+    return render(request, 'auctions/index.html', 
+                  { 'heading': "Your Listings", 
+                  'listings': owner_listings})
+            
