@@ -23,7 +23,7 @@ class Listing(models.Model):
 
     winner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='winner_listing', null=True, blank=True, default=None)
     current_bid = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
-    closed_date = models.DateTimeField(auto_now_add=True)
+    closed_date = models.DateTimeField(null=True)
 
     def __str__(self):
         return f"{self.title} ({self.category}) - {self.owner.username}"

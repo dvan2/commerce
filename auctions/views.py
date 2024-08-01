@@ -195,6 +195,7 @@ def close(request, listing_id):
         
         listing.winner = winner.bidder
         listing.closed_date = timezone.now()
+        listing.save()
         
         return redirect('index')
     
