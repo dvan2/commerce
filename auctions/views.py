@@ -202,9 +202,4 @@ def close(request, listing_id):
  
 @login_required
 def profile(request):
-    # user = request.user
-    # winning_bids = user.winner_listing.all()
-    # return render(request, 'auctions/index.html', 
-    #               { 'heading': "Your winning bids", 
-    #                'listings': winning_bids})
-    return redirect('index')
+    return render(request, 'auctions/profile.html')
