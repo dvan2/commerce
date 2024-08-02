@@ -20,7 +20,8 @@
               <a class="card-title" href="{% url 'listing' listing.pk %}">{{ listing.title }}</a>
               <p class="card-text">{{ listing.description }}</p>
               {% if listing.winner %}
-              <p class="card-text">Sold For: ${{ listing.current_bid }}</p>
+              <p>Listing is closed</p>
+              {% comment %} <p class="card-text">Sold For: ${{ listing.current_bid }}</p> {% endcomment %}
               {% else %}
               <p class="card-text">Current Bid Price: ${{ listing.current_bid }}</p>
               {% endif %}

@@ -195,14 +195,12 @@ def close(request, listing_id):
 
         # get winner
         winner = Bidding.objects.filter(listing=listing).order_by('-amount').first()
-        if not winner:
-            return redirect('listing', listing_id=listing_id)
-
-        listing.winner = winner.bidder
+        if winner:
+            listing.winner = winner.bidder
         listing.closed_date = timezone.now()
         listing.save()
     
-        return redirect('index')
+        return redirect('listing', listing_id=listing_id)
     
     return redirect('index')
  

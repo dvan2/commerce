@@ -56,7 +56,7 @@
       </form>
       <!-- prettier-ignore -->
       {% if listing.winning_user %}You are leading the bid {% endif %} 
-      {% elif listing.is_owner and not listing.winner and listing.closed_date %}
+      {% elif listing.is_owner and not listing.winner and not listing.closed_date %}
       <form action="{% url 'close' listing.id %}" method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger mt-3">Close Listing</button>
@@ -66,7 +66,7 @@
       {% elif listing.winner %}
       <p>Listing is Sold!</p>
       <p>Won By: {{ listing.winner }}</p>
-      {% elif not listing.closed_date %}
+      {% elif listing.closed_date %}
       <p>There are no winnings bids for this item.</p>
       {% endif %}
       <ul>
