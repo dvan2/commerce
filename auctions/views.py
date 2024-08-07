@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.utils import timezone
 
-from .models import User, Listing, Bidding
+from .models import User, Listing, Bidding, Comment
 
 
 def index(request):
@@ -116,6 +116,7 @@ def listing(request, listing_id):
     except Listing.DoesNotExist:
         return HttpResponseBadRequest("Listing not found.")
 
+    bidding_history = listing.bids.order_by('-amount')
     if request.user.is_authenticated:
         listing.watched = request.user.watchlist.filter(id=listing_id).exists()
         listing.is_owner = (listing.owner == request.user)
@@ -126,7 +127,6 @@ def listing(request, listing_id):
         else:
             listing.winner_user = False
         
-        bidding_history = listing.bids.order_by('-amount')
         if request.method == "POST":
             try:
                 new_bid = float(request.POST.get("new-bid"))
@@ -150,31 +150,38 @@ def listing(request, listing_id):
                 listing.save()
                 messages.success(request, "Your bid was successful")
             return redirect('listing', listing_id=listing_id)
-
+    comments = listing.comments.all()
+    print(comments)
     return render(request, "auctions/listing.html", {
         "listing": listing,
-        "bidding_history" : bidding_history
+        "bidding_history" : bidding_history,
+        "comments": comments
     })
 
 @login_required
 def watch_list(request, listing_id=None):
     user = request.user
-    if request.method == "POST" and listing_id is not None:
-        try:
-            listing = Listing.objects.get(id=listing_id)
-        except Listing.DoesNotExist:
-            return HttpResponseBadRequest("Listing not found.")
-        
-        watched = False
-        if listing in user.watchlist.all():
-            user.watchlist.remove(listing)
-            watched= False
-        else:
-            user.watchlist.add(listing)
-            watched = True
 
-        listing.watched = watched
-        return redirect('listing', listing_id = listing_id)
+    if request.method == "POST" and listing_id is not None:
+        if user.is_authenticated:
+            try:
+                listing = Listing.objects.get(id=listing_id)
+            except Listing.DoesNotExist:
+                return HttpResponseBadRequest("Listing not found.")
+            
+            watched = False
+            if listing in user.watchlist.all():
+                user.watchlist.remove(listing)
+                watched= False
+            else:
+                user.watchlist.add(listing)
+                watched = True
+
+            listing.watched = watched
+            return redirect('listing', listing_id = listing_id)
+        else:
+            messages.error("Please login or create account first.")
+            return redirect('login')
     else:
         return render(request, "auctions/index.html", {
             "heading": "Watch List",
@@ -232,3 +239,22 @@ def user_listings(request):
                   { 'heading': "Your Listings", 
                   'listings': owner_listings})
             
+@login_required
+def comment(request, listing_id):
+    user = request.user
+    try:
+        listing = Listing.objects.get(id=listing_id)
+    except Listing.DoesNotExist:
+        return HttpResponseBadRequest("Listing not found.")
+ 
+    content = request.POST.get("comment")
+    if request.method == "POST":
+        new_comment = Comment(
+            user = user,
+            listing = listing,
+            content= content,
+        )
+        new_comment.save()
+        messages.success(request, "Added comment")
+        return redirect('listing', listing_id = listing_id)
+    return redirect('listing', listing_id= listing_id)

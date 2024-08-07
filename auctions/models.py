@@ -28,6 +28,12 @@ class Listing(models.Model):
     def __str__(self):
         return f"{self.title} ({self.category}) - {self.owner.username}"
 
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, related_name='comments', on_delete=models.CASCADE)
+    content = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
 
 class Bidding(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE)

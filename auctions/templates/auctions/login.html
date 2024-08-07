@@ -1,12 +1,14 @@
 {% extends "auctions/layout.html" %} {% block body %}
-
+<!-- prettier-ignore -->
 <div class="login-container">
+  {% if messages %} 
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+  <div class="alert alert-danger" role="alert">{{ message }}</div>
+  {% else %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+  {% endif %} {% endfor %} {% endif %}
   <h2>Login</h2>
-
-  {% if message %}
-  <div>{{ message }}</div>
-  {% endif %}
-
   <form action="{% url 'login' %}" method="post">
     {% csrf_token %}
     <div class="form-group row mb-3">

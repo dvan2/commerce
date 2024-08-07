@@ -13,7 +13,7 @@
   </div>
 </div>
 
-<div class="container">
+<div class="container-fluid">
   <div class="row">
     {% if listing.url %}
     <div class="col-sm-4">
@@ -27,25 +27,15 @@
     <div class="col">
       <h3>Bid: ${{ listing.current_bid }}</h3>
       <p>{{ listing.description }}</p>
-      <p>Posted By: {{ listing.owner }}</p>
+      <!-- prettier-ignore -->
+      <p>Posted By: 
+        {% if listing.is_owner %}
+          You
+        {% else %}
+        {{ listing.owner }}
+        {% endif %}
+      </p>
       {% if listing.is_owner == False and not listing.winner %}
-      <form action="{% url 'listing' listing.id %}" method="post">
-        {% csrf_token %}
-        <label for="new-bid" class="form-label">Bid Price:</label>
-        <div class="col-2">
-          <input
-            type="number"
-            id="new-bid"
-            name="new-bid"
-            class="form-control mb-3"
-            min="0"
-            required
-          />
-        </div>
-        <div>
-          <button type="submit" class="btn btn-primary">Place Bid</button>
-        </div>
-      </form>
       <form action="{% url 'watch_list' listing.id %}" method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-secondary mt-3">
@@ -69,17 +59,49 @@
       {% elif listing.closed_date %}
       <p>There are no winnings bids for this item.</p>
       {% endif %}
-      <ul>
-        <h3>Bidding History</h3>
-        {% for bid in bidding_history %}
-        <li>
-          ${{ bid.amount }} by {{ bid.bidder.username }} on {{ bid.bid_date }}
-        </li>
-        {% empty %}
-        <li>No previous bids yet</li>
-        {% endfor %}
-      </ul>
     </div>
-    {% endblock body %}
+    <div class="row mt-3">
+      <div class="col-sm-4">
+        <h3>Bidding History</h3>
+        <ul>
+          {% for bid in bidding_history %}
+          <li>
+            ${{ bid.amount }} by {{ bid.bidder.username }} on {{ bid.bid_date }}
+          </li>
+          {% empty %}
+          <li>No previous bids yet</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-sm">
+        <form action="{% url 'comment' listing.id %}" method="post">
+          {% csrf_token %}
+          <label for="comment" class="form-label">Add Comment:</label>
+          <textarea
+            id="comment"
+            name="comment"
+            class="form-control mb-3"
+            required
+          ></textarea>
+          <div>
+            <button type="submit" class="btn btn-primary">Post</button>
+          </div>
+        </form>
+      </div>
+      <div class="container mt-5">
+        {% if comments %}
+        <ul>
+          {% for comment in comments %}
+          <li>
+            <p>{{ comment.content }} <br />-{{ comment.user }}</p>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No comments for this listing yet.</p>
+        {% endif %}
+      </div>
+      {% endblock body %}
+    </div>
   </div>
 </div>
