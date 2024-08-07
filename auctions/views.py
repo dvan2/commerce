@@ -56,6 +56,8 @@ def create(request):
             category=category,
             current_bid = bid
         )
+        messages.success(request, "Listing successfully created.")
+        return redirect('listing', listing_id=listing.id)
 
     return render(request, "auctions/create.html", {'categories': categories})
 
