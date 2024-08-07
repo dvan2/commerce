@@ -28,6 +28,9 @@
         <li class="hideOnMobile">
           <a href="{% url 'index' %}">Active Listings</a>
         </li>
+        <li>
+          <a href="{% url 'categories' %}">Categories</a>
+        </li>
         <li class="hideOnMobile">
           <a href="{% url 'create' %}">Create Listing</a>
         </li>
@@ -83,7 +86,9 @@
             </svg>
           </a>
         </li>
-
+        <li>
+          <a href="{% url 'categories' %}">Categories</a>
+        </li>
         <li>
           <a href="{% url 'index' %}">Active Listings</a>
         </li>
@@ -108,6 +113,13 @@
       </ul>
     </nav>
     <hr />
-    {% block body %} {% endblock body %}
+    <!-- prettier-ignore -->
+    {% if messages %} 
+      {% for message in messages %} 
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{ message }}</div>
+    {% else %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endif %} {% endfor %} {% endif %} {% block body %} {% endblock body %}
   </body>
 </html>

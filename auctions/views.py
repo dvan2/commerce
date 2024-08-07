@@ -132,7 +132,6 @@ def listing(request, listing_id):
                 new_bid = float(request.POST.get("new-bid"))
             except ValueError:
                 messages.error(request, "Bid value must be a number")
-                # return redirect('listing', listing_id = listing_id)
             old_bid = listing.current_bid
             if new_bid < 0:
                 messages.error(request, "Bid value must be postive")
@@ -258,3 +257,21 @@ def comment(request, listing_id):
         messages.success(request, "Added comment")
         return redirect('listing', listing_id = listing_id)
     return redirect('listing', listing_id= listing_id)
+
+def categories(request):
+    categories = Listing.Category.choices
+    if request.method == "POST":
+        category = request.POST.get("cat-select")
+        if category not in dict(Listing.Category.choices):
+            messages.error(request, "Invalid category.")
+            return render(request, "auctions/create.html")
+        
+        listings = Listing.objects.filter(category=category)
+        return render(request, 'auctions/index.html', {
+            'heading': dict(Listing.Category.choices).get(category),
+            'listings': listings
+        })
+    else:
+        return render(request, 'auctions/categories.html', {
+            'categories': categories
+        })

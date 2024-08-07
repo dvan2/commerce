@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %} {% block body %}
+<div class="container">
+  <div class="row">
+    <div class="card col-sm">
+      <div class="card-body">
+        <h5>Categories</h5>
+        <p class="card-text">Select a category to filter lists on.</p>
+        <form action="{% url 'categories' %}" method="post">
+          {% csrf_token %}
+          <select name="cat-select">
+            {% for category, name in categories %}
+            <option value="{{ category }}">{{ name }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endblock body %}
+</div>
